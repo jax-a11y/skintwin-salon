@@ -8,6 +8,7 @@
  * - durationMinutes: required duration
  */
 
+import crypto from 'crypto'
 import Providers from '../../data/providers.json'
 
 export default async function checkAvailability(req, res) {
@@ -72,7 +73,9 @@ export default async function checkAvailability(req, res) {
         const time = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
 
         // Simulate some slots being booked (in real app, would check database)
-        const isBooked = Math.random() > 0.7
+        // Using crypto for deterministic pseudo-random simulation
+        const randomByte = crypto.randomBytes(1)[0]
+        const isBooked = randomByte > 178 // ~30% chance of being booked
 
         slots.push({
           time,

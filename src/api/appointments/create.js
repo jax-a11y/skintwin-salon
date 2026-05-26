@@ -3,6 +3,8 @@
  * POST /api/appointments/create
  */
 
+import crypto from 'crypto'
+
 export default async function createAppointment(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ status: false, message: 'Method not allowed' })
@@ -38,8 +40,8 @@ export default async function createAppointment(req, res) {
       })
     }
 
-    // Generate appointment ID and reference
-    const appointmentId = `APT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    // Generate appointment ID and reference using crypto for secure unique IDs
+    const appointmentId = `APT_${Date.now()}_${crypto.randomUUID().split('-')[0]}`
     const reference = `REF_${Date.now()}`
 
     // Create appointment object

@@ -3,6 +3,8 @@
  * POST /api/clients/create
  */
 
+import crypto from 'crypto'
+
 export default async function createClient(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ status: false, message: 'Method not allowed' })
@@ -40,8 +42,8 @@ export default async function createClient(req, res) {
       })
     }
 
-    // Generate client ID
-    const clientId = `CLT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    // Generate client ID using crypto for secure unique IDs
+    const clientId = `CLT_${Date.now()}_${crypto.randomUUID().split('-')[0]}`
 
     // Create client object
     const client = {
