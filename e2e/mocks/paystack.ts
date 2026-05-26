@@ -104,3 +104,61 @@ export async function mockTerminalError(page: Page): Promise<void> {
     })
   })
 }
+
+/**
+ * Simulate payment success via Pusher event
+ */
+export async function simulatePaymentSuccess(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    // Dispatch custom event to simulate Pusher payment success
+    window.dispatchEvent(
+      new CustomEvent('pusher:payment', {
+        detail: {
+          event: 'paymentrequest.success',
+          data: {
+            status: 'success',
+            reference: 'PAY_mock_success',
+          },
+        },
+      })
+    )
+
+    // Also try to call the Pusher mock callback if available
+    const mockPusher = (window as { mockPusher?: { triggerEvent: (event: string, data: unknown) => void } }).mockPusher
+    if (mockPusher) {
+      mockPusher.triggerEvent('paymentrequest.success', {
+        status: 'success',
+        reference: 'PAY_mock_success',
+      })
+    }
+  })
+}
+
+/**
+ * Simulate payment failure via Pusher event
+ */
+export async function simulatePaymentFailure(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    // Dispatch custom event to simulate Pusher payment failure
+    window.dispatchEvent(
+      new CustomEvent('pusher:payment', {
+        detail: {
+          event: 'paymentrequest.failed',
+          data: {
+            status: 'failed',
+            message: 'Payment was declined',
+          },
+        },
+      })
+    )
+
+    // Also try to call the Pusher mock callback if available
+    const mockPusher = (window as { mockPusher?: { triggerEvent: (event: string, data: unknown) => void } }).mockPusher
+    if (mockPusher) {
+      mockPusher.triggerEvent('paymentrequest.failed', {
+        status: 'failed',
+        message: 'Payment was declined',
+      })
+    }
+  })
+}
