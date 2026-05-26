@@ -144,7 +144,7 @@ Prioritize the following optimizations because they directly affect front-desk e
 
 ## 4. Build and CI implementation plan
 
-## CI goals
+### CI goals
 
 - verify every pull request
 - keep production builds reproducible
