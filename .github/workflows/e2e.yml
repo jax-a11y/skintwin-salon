@@ -75,7 +75,7 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: gatsby-build-e2e
           path: public/
@@ -114,7 +114,7 @@ jobs:
         run: npx playwright install firefox --with-deps
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: gatsby-build-e2e
           path: public/
@@ -153,7 +153,7 @@ jobs:
         run: npx playwright install webkit --with-deps
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: gatsby-build-e2e
           path: public/
@@ -193,7 +193,7 @@ jobs:
         run: npx playwright install chromium webkit --with-deps
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: gatsby-build-e2e
           path: public/
@@ -232,7 +232,7 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: gatsby-build-e2e
           path: public/
