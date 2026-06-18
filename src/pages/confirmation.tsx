@@ -8,14 +8,15 @@ import '../components/Confirmation/confirmation.scss'
 
 const ConfirmationPage = () => {
   const { services, appointment, client, checkout, resetBooking } = useBooking()
+  const serviceById = new Map(Services.map((service) => [service.id, service]))
 
   const selectedServices = services
     .map((selection) => {
-      const details = Services.find((service) => service.id === selection.serviceId)
+      const details = serviceById.get(selection.serviceId)
       if (!details) return null
       return { ...details, quantity: selection.quantity }
     })
-    .filter(Boolean)
+    .filter((service): service is (typeof Services)[number] & { quantity: number } => service !== null)
 
   // Calculate total duration and price
   const totalDuration = selectedServices.reduce((sum, service) => {
@@ -49,6 +50,10 @@ const ConfirmationPage = () => {
 
   const appointmentDetails = appointment || { date: '', startTime: '', endTime: '', providerId: '' }
   const clientDetails = client || { firstName: '', lastName: '', email: '', phone: '' }
+  const clientName =
+    clientDetails.firstName || clientDetails.lastName
+      ? `${clientDetails.firstName} ${clientDetails.lastName}`.trim()
+      : 'Not provided'
 
   return (
     <Layout pageTitle="Booking Confirmed">
@@ -141,9 +146,7 @@ const ConfirmationPage = () => {
             <dl className="confirmation__list">
               <div className="confirmation__item">
                 <dt>Name</dt>
-                <dd data-testid="confirmation-client-name">
-                  {`${clientDetails.firstName} ${clientDetails.lastName}`.trim() || 'Not provided'}
-                </dd>
+                <dd data-testid="confirmation-client-name">{clientName}</dd>
               </div>
 
               <div className="confirmation__item">
