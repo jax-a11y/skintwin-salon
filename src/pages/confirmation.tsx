@@ -2,20 +2,33 @@ import React from 'react'
 import { Link } from 'gatsby'
 import { Layout } from '../components'
 import { useBooking } from '../context/booking-context'
+import Services from '../data/services.json'
 
 import '../components/Confirmation/confirmation.scss'
 
 const ConfirmationPage = () => {
   const { services, appointment, client, checkout, resetBooking } = useBooking()
+  const serviceById = React.useMemo(
+    () => new Map(Services.map((service) => [service.id, service])),
+    []
+  )
+
+  const selectedServices = (services || [])
+    .map((selection) => {
+      const details = serviceById.get(selection.serviceId)
+      if (!details) return null
+      return { ...details, quantity: selection.quantity }
+    })
+    .filter((service): service is (typeof Services)[number] & { quantity: number } => service !== null)
 
   // Calculate total duration and price
-  const totalDuration = services.reduce((sum, s) => {
-    return sum + (s.durationMinutes || 0) + (s.bufferMinutes || 0)
+  const totalDuration = selectedServices.reduce((sum, service) => {
+    return sum + ((service.durationMinutes || 0) + (service.bufferMinutes || 0)) * service.quantity
   }, 0)
 
-  const totalPrice = services.reduce((sum, s) => sum + s.price * s.quantity, 0)
+  const totalPrice = selectedServices.reduce((sum, service) => sum + service.price * service.quantity, 0)
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-NG', {
       style: 'currency',
       currency: 'NGN',
@@ -23,7 +36,7 @@ const ConfirmationPage = () => {
     }).format(amount)
   }
 
-  const formatDate = (dateStr) => {
+  const formatDate = (dateStr?: string) => {
     if (!dateStr) return 'Not scheduled'
     const date = new Date(dateStr)
     return date.toLocaleDateString('en-NG', {
@@ -38,8 +51,15 @@ const ConfirmationPage = () => {
     resetBooking()
   }
 
+  const appointmentDetails = appointment || { date: '', startTime: '', endTime: '', providerId: '' }
+  const clientDetails = client || { firstName: '', lastName: '', email: '', phone: '' }
+  const clientName =
+    clientDetails.firstName || clientDetails.lastName
+      ? `${clientDetails.firstName} ${clientDetails.lastName}`.trim()
+      : 'Not provided'
+
   return (
-    <Layout>
+    <Layout pageTitle="Booking Confirmed">
       <main className="confirmation" role="main" aria-labelledby="confirmation-heading">
         <div className="confirmation__header">
           <div className="confirmation__icon" aria-hidden="true">
@@ -70,20 +90,20 @@ const ConfirmationPage = () => {
 
               <div className="confirmation__item">
                 <dt>Date</dt>
-                <dd data-testid="confirmation-date">{formatDate(appointment.date)}</dd>
+                <dd data-testid="confirmation-date">{formatDate(appointmentDetails.date)}</dd>
               </div>
 
               <div className="confirmation__item">
                 <dt>Time</dt>
                 <dd data-testid="confirmation-time">
-                  {appointment.startTime || 'Not scheduled'} - {appointment.endTime || ''}
+                  {appointmentDetails.startTime || 'Not scheduled'} - {appointmentDetails.endTime || ''}
                 </dd>
               </div>
 
-              {appointment.providerId && (
+              {appointmentDetails.providerId && (
                 <div className="confirmation__item">
                   <dt>Provider</dt>
-                  <dd data-testid="confirmation-provider">{appointment.providerId}</dd>
+                  <dd data-testid="confirmation-provider">{appointmentDetails.providerId}</dd>
                 </div>
               )}
             </dl>
@@ -95,7 +115,7 @@ const ConfirmationPage = () => {
             </h2>
 
             <ul className="confirmation__services" data-testid="confirmation-services">
-              {services.map((service) => (
+              {selectedServices.map((service) => (
                 <li key={service.id} className="confirmation__service">
                   <span className="confirmation__service-name">
                     {service.name}
@@ -107,6 +127,11 @@ const ConfirmationPage = () => {
                 </li>
               ))}
             </ul>
+            {selectedServices.length === 0 && (
+              <p role="status" aria-live="polite">
+                No services selected.
+              </p>
+            )}
 
             <div className="confirmation__totals">
               <div className="confirmation__total-row">
@@ -128,19 +153,17 @@ const ConfirmationPage = () => {
             <dl className="confirmation__list">
               <div className="confirmation__item">
                 <dt>Name</dt>
-                <dd data-testid="confirmation-client-name">
-                  {client.firstName} {client.lastName}
-                </dd>
+                <dd data-testid="confirmation-client-name">{clientName}</dd>
               </div>
 
               <div className="confirmation__item">
                 <dt>Email</dt>
-                <dd data-testid="confirmation-email">{client.email}</dd>
+                <dd data-testid="confirmation-email">{clientDetails.email || 'Not provided'}</dd>
               </div>
 
               <div className="confirmation__item">
                 <dt>Phone</dt>
-                <dd data-testid="confirmation-phone">{client.phone}</dd>
+                <dd data-testid="confirmation-phone">{clientDetails.phone || 'Not provided'}</dd>
               </div>
             </dl>
           </section>
@@ -170,7 +193,10 @@ const ConfirmationPage = () => {
           <ul>
             <li>Please arrive 10 minutes before your scheduled appointment time.</li>
             <li>If you need to reschedule or cancel, please contact us at least 24 hours in advance.</li>
-            <li>A confirmation email has been sent to {client.email}.</li>
+            <li>
+              A confirmation email has been sent to{' '}
+              {clientDetails.email || 'the email address you provided during booking'}.
+            </li>
           </ul>
         </div>
       </main>
