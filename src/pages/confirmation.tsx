@@ -8,9 +8,12 @@ import '../components/Confirmation/confirmation.scss'
 
 const ConfirmationPage = () => {
   const { services, appointment, client, checkout, resetBooking } = useBooking()
-  const serviceById = new Map(Services.map((service) => [service.id, service]))
+  const serviceById = React.useMemo(
+    () => new Map(Services.map((service) => [service.id, service])),
+    []
+  )
 
-  const selectedServices = services
+  const selectedServices = (services || [])
     .map((selection) => {
       const details = serviceById.get(selection.serviceId)
       if (!details) return null
@@ -124,7 +127,11 @@ const ConfirmationPage = () => {
                 </li>
               ))}
             </ul>
-            {selectedServices.length === 0 && <p>No services selected.</p>}
+            {selectedServices.length === 0 && (
+              <p role="status" aria-live="polite">
+                No services selected.
+              </p>
+            )}
 
             <div className="confirmation__totals">
               <div className="confirmation__total-row">
