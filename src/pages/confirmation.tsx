@@ -194,7 +194,8 @@ const ConfirmationPage = () => {
             <li>Please arrive 10 minutes before your scheduled appointment time.</li>
             <li>If you need to reschedule or cancel, please contact us at least 24 hours in advance.</li>
             <li>
-              A confirmation email has been sent to {clientDetails.email || 'your registered email'}.
+              A confirmation email has been sent to{' '}
+              {clientDetails.email || 'the email address you provided during booking'}.
             </li>
           </ul>
         </div>
