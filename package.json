@@ -46,7 +46,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-helmet": "^6.1.0",
-    "sass": "^1.100.0"
+    "sass": "1.99.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.8.0",
