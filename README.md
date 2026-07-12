@@ -169,6 +169,12 @@ skintwin-salon/
 └── tsconfig.json          # TypeScript configuration
 ```
 
+## 🌐 Ecosystem
+
+This repository is part of the [SkinTwin-AI ecosystem](https://github.com/jax-a11y/skintwin-ecosystem-design)
+as a **commerce-surface** layer **storefront**. See [ECOSYSTEM.md](./ECOSYSTEM.md) for the contracts and
+events this repo provides and consumes, and `.skintwin/manifest.json` for the machine-readable manifest.
+
 ## 🔗 Related
 
 - [skintwin-ai](https://github.com/skintwin-ai) - Parent ecosystem
