@@ -14,20 +14,6 @@ const Cart = () => {
   const {productIds} = useContext(CartContext)
 
   useEffect(() => {
-    notifications()
-  }, [event])
-
-  useEffect(() => {
-    setProducts(fetchProducts(productIds))
-  }, [productIds])
-
-  const fetchProducts = (productIds) => {
-    return Products.filter((product) => productIds.includes(product.id))
-  }
-
-  const notifications = () => {
-
-
     const pusher = new Pusher(process.env.GATSBY_PUSHER_KEY, {
       cluster: 'eu'
     });
@@ -42,6 +28,18 @@ const Cart = () => {
         setEvent("Paid")
       }
     });
+
+    return () => {
+      pusher.disconnect()
+    }
+  }, [])
+
+  useEffect(() => {
+    setProducts(fetchProducts(productIds))
+  }, [productIds])
+
+  const fetchProducts = (productIds) => {
+    return Products.filter((product) => productIds.includes(product.id))
   }
 
   return (
