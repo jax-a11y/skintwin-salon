@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jax-a11y/skintwin-ecosystem-design/main/schemas/ecosystem-manifest.schema.json",
+  "manifestVersion": "1.0",
+  "github": "jax-a11y/skintwin-salon",
+  "layer": "commerce-surface",
+  "role": "storefront",
+  "description": "Gatsby 4 salon booking and checkout storefront: service discovery, scheduling, client intake/consent, Paystack Terminal payment with Pusher real-time status.",
+  "designAlias": null,
+  "gatewayPrefix": null,
+  "provides": [],
+  "consumes": [
+    "integration-api"
+  ],
+  "events": {
+    "publishes": [
+      "order.placed",
+      "appointment.created"
+    ],
+    "subscribes": []
+  },
+  "ci": {
+    "workflows": [
+      "ci.yml (lint, typecheck, unit, Gatsby build)"
+    ],
+    "usesReusable": false
+  },
+  "registry": "https://github.com/jax-a11y/skintwin-ecosystem-design/blob/main/registry/ecosystem.json"
+}
