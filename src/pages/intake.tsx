@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { navigate } from 'gatsby'
 
 import { BookingContext } from '../context/booking-context'
@@ -7,9 +7,28 @@ import { Layout } from '../components'
 import '../styles/global.scss'
 import '../components/Intake/intake.scss'
 
+interface ClientData {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  previousVisits?: number
+}
+
+const SIMULATED_CLIENTS: ClientData[] = [
+  {
+    firstName: 'Adaeze',
+    lastName: 'Obi',
+    email: 'adaeze.obi@example.com',
+    phone: '+2348012345678',
+    previousVisits: 3,
+  },
+]
+
 const IntakePage: React.FC = () => {
   const context = useContext(BookingContext)
 
+  const [activeTab, setActiveTab] = useState<'new' | 'returning'>('new')
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -21,7 +40,19 @@ const IntakePage: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isLookingUp, setIsLookingUp] = useState(false)
   const [lookupEmail, setLookupEmail] = useState('')
-  const [clientFound, setClientFound] = useState(false)
+  const [lookupPhone, setLookupPhone] = useState('')
+  const [clientFound, setClientFound] = useState<ClientData | null>(null)
+  const [lookupNotFound, setLookupNotFound] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+
+  useEffect(() => {
+    if (submitted) {
+      const timer = setTimeout(() => {
+        navigate('/cart')
+      }, 800)
+      return () => clearTimeout(timer)
+    }
+  }, [submitted])
 
   const validateEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -38,44 +69,62 @@ const IntakePage: React.FC = () => {
       [name]: type === 'checkbox' ? checked : value,
     }))
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }))
     }
   }
 
   const handleLookup = async () => {
-    if (!lookupEmail || !validateEmail(lookupEmail)) {
-      setErrors({ lookupEmail: 'Please enter a valid email address' })
+    const emailToSearch = lookupEmail.trim()
+    const phoneToSearch = lookupPhone.trim()
+
+    if (!emailToSearch && !phoneToSearch) {
+      setErrors({ lookup: 'Please enter an email or phone number' })
+      return
+    }
+
+    if (emailToSearch && !validateEmail(emailToSearch)) {
+      setErrors({ lookup: 'Please enter a valid email address' })
       return
     }
 
     setIsLookingUp(true)
     setErrors({})
+    setLookupNotFound(false)
+    setClientFound(null)
 
     try {
-      // Simulate API lookup - in real app, would call actual API
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      // Simulated found client
-      if (lookupEmail === 'adaeze.obi@example.com') {
-        setFormData({
-          firstName: 'Adaeze',
-          lastName: 'Obi',
-          email: 'adaeze.obi@example.com',
-          phone: '+2348012345678',
-          consentAccepted: true,
-        })
-        setClientFound(true)
+      const found = SIMULATED_CLIENTS.find(
+        (c) =>
+          (emailToSearch && c.email === emailToSearch) ||
+          (phoneToSearch && c.phone === phoneToSearch)
+      )
+
+      if (found) {
+        setClientFound(found)
+        setLookupNotFound(false)
       } else {
-        setClientFound(false)
-        setErrors({ lookupEmail: 'No client found with this email' })
+        setClientFound(null)
+        setLookupNotFound(true)
       }
-    } catch (error) {
-      setErrors({ lookupEmail: 'Error looking up client' })
+    } catch {
+      setErrors({ lookup: 'Error looking up client' })
     } finally {
       setIsLookingUp(false)
     }
+  }
+
+  const handleUseClient = (client: ClientData) => {
+    setFormData({
+      firstName: client.firstName,
+      lastName: client.lastName,
+      email: client.email,
+      phone: client.phone,
+      consentAccepted: true,
+    })
+    setActiveTab('new')
   }
 
   const validate = () => {
@@ -125,16 +174,16 @@ const IntakePage: React.FC = () => {
       intakeCompleted: true,
     })
 
-    navigate('/cart')
+    setSubmitted(true)
   }
 
-  if (!context?.appointment) {
+  if (submitted) {
     return (
       <Layout pageTitle="Client Information">
-        <div className="intake-empty">
-          <h2>No Appointment Scheduled</h2>
-          <p>Please schedule an appointment first.</p>
-          <button onClick={() => navigate('/booking')}>Schedule Appointment</button>
+        <div className="intake">
+          <div className="intake__success" data-testid="client-saved-message">
+            ✓ Your information has been saved. Redirecting to checkout...
+          </div>
         </div>
       </Layout>
     )
@@ -145,157 +194,211 @@ const IntakePage: React.FC = () => {
       <div className="intake">
         <h1 className="intake__title">Client Information</h1>
 
-        {/* Returning Client Lookup */}
-        <section className="intake__section">
-          <h2>Returning Client?</h2>
-          <p>Enter your email to prefill your information</p>
-          <div className="intake__lookup">
-            <input
-              type="email"
-              value={lookupEmail}
-              onChange={(e) => setLookupEmail(e.target.value)}
-              placeholder="Enter your email"
-              data-testid="lookup-email"
-            />
-            <button
-              type="button"
-              onClick={handleLookup}
-              disabled={isLookingUp}
-              data-testid="lookup-client"
-            >
-              {isLookingUp ? 'Looking up...' : 'Look Up'}
-            </button>
-          </div>
-          {errors.lookupEmail && (
-            <span className="intake__error" data-testid="error-lookupEmail">
-              {errors.lookupEmail}
-            </span>
-          )}
-          {clientFound && (
-            <div className="intake__found" data-testid="client-found">
-              ✓ Welcome back! Your information has been prefilled.
-            </div>
-          )}
-        </section>
+        <div className="intake__tabs" role="tablist">
+          <button
+            role="tab"
+            aria-selected={activeTab === 'new'}
+            className={`intake__tab${activeTab === 'new' ? ' intake__tab--active' : ''}`}
+            data-testid="new-client-tab"
+            onClick={() => setActiveTab('new')}
+          >
+            New Client
+          </button>
+          <button
+            role="tab"
+            aria-selected={activeTab === 'returning'}
+            className={`intake__tab${activeTab === 'returning' ? ' intake__tab--active' : ''}`}
+            data-testid="returning-client-tab"
+            onClick={() => setActiveTab('returning')}
+          >
+            Returning Client
+          </button>
+        </div>
 
-        {/* Client Form */}
-        <form onSubmit={handleSubmit} className="intake__form" data-testid="client-form">
-          <div className="intake__row">
-            <div className="intake__field">
-              <label htmlFor="firstName">First Name *</label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                data-testid="first-name"
-              />
-              {errors.firstName && (
-                <span
-                  className="intake__error"
-                  data-error-for="firstName"
-                  data-testid="error-firstName"
-                >
-                  {errors.firstName}
-                </span>
-              )}
-            </div>
-
-            <div className="intake__field">
-              <label htmlFor="lastName">Last Name *</label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                data-testid="last-name"
-              />
-              {errors.lastName && (
-                <span
-                  className="intake__error"
-                  data-error-for="lastName"
-                  data-testid="error-lastName"
-                >
-                  {errors.lastName}
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="intake__row">
-            <div className="intake__field">
-              <label htmlFor="email">Email Address *</label>
+        {activeTab === 'returning' && (
+          <section className="intake__section" aria-label="Returning client lookup">
+            <h2>Find Your Profile</h2>
+            <p>Enter your email or phone number to find your existing profile</p>
+            <div className="intake__lookup">
               <input
                 type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                data-testid="email"
+                value={lookupEmail}
+                onChange={(e) => setLookupEmail(e.target.value)}
+                placeholder="Email address"
+                data-testid="lookup-email"
+                aria-label="Lookup email"
               />
-              {errors.email && (
-                <span className="intake__error" data-error-for="email" data-testid="error-email">
-                  {errors.email}
-                </span>
-              )}
-            </div>
-
-            <div className="intake__field">
-              <label htmlFor="phone">Phone Number *</label>
               <input
                 type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                placeholder="+234..."
-                data-testid="phone"
+                value={lookupPhone}
+                onChange={(e) => setLookupPhone(e.target.value)}
+                placeholder="Phone number (e.g. +2348012345678)"
+                data-testid="lookup-phone"
+                aria-label="Lookup phone"
               />
-              {errors.phone && (
-                <span className="intake__error" data-error-for="phone" data-testid="error-phone">
-                  {errors.phone}
+              <button
+                type="button"
+                onClick={handleLookup}
+                disabled={isLookingUp}
+                data-testid="lookup-button"
+              >
+                {isLookingUp ? 'Looking up...' : 'Look Up'}
+              </button>
+            </div>
+            {errors.lookup && (
+              <span className="intake__error" data-testid="error-lookup">
+                {errors.lookup}
+              </span>
+            )}
+            {lookupNotFound && (
+              <div className="intake__not-found" data-testid="client-not-found-message">
+                Client not found. Please register as a new client.
+              </div>
+            )}
+            {clientFound && (
+              <div className="intake__found" data-testid="client-found-message">
+                <p>
+                  ✓ Welcome back, {clientFound.firstName} {clientFound.lastName}!
+                </p>
+                {clientFound.previousVisits !== undefined && (
+                  <p data-testid="previous-visits">Previous visits: {clientFound.previousVisits}</p>
+                )}
+                <button
+                  type="button"
+                  data-testid="use-client-button"
+                  onClick={() => handleUseClient(clientFound)}
+                  className="intake__use-client"
+                >
+                  Use This Profile
+                </button>
+              </div>
+            )}
+          </section>
+        )}
+
+        {activeTab === 'new' && (
+          <form onSubmit={handleSubmit} className="intake__form" data-testid="client-form">
+            <div className="intake__row">
+              <div className="intake__field">
+                <label htmlFor="firstName">First Name *</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  data-testid="first-name"
+                />
+                {errors.firstName && (
+                  <span
+                    className="intake__error"
+                    data-error-for="firstName"
+                    data-testid="error-firstName"
+                  >
+                    {errors.firstName}
+                  </span>
+                )}
+              </div>
+
+              <div className="intake__field">
+                <label htmlFor="lastName">Last Name *</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  data-testid="last-name"
+                />
+                {errors.lastName && (
+                  <span
+                    className="intake__error"
+                    data-error-for="lastName"
+                    data-testid="error-lastName"
+                  >
+                    {errors.lastName}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="intake__row">
+              <div className="intake__field">
+                <label htmlFor="email">Email Address *</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  data-testid="email"
+                />
+                {errors.email && (
+                  <span className="intake__error" data-error-for="email" data-testid="error-email">
+                    {errors.email}
+                  </span>
+                )}
+              </div>
+
+              <div className="intake__field">
+                <label htmlFor="phone">Phone Number *</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="+234..."
+                  data-testid="phone"
+                />
+                {errors.phone && (
+                  <span className="intake__error" data-error-for="phone" data-testid="error-phone">
+                    {errors.phone}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="intake__consent">
+              <label className="intake__checkbox">
+                <input
+                  type="checkbox"
+                  name="consentAccepted"
+                  checked={formData.consentAccepted}
+                  onChange={handleInputChange}
+                  data-testid="consent-checkbox"
+                />
+                <span>
+                  I consent to receive treatment and understand the salon policies. I confirm that
+                  all information provided is accurate. *
+                </span>
+              </label>
+              {errors.consent && (
+                <span
+                  className="intake__error"
+                  data-error-for="consent"
+                  data-testid="error-consent"
+                >
+                  {errors.consent}
                 </span>
               )}
             </div>
-          </div>
 
-          <div className="intake__consent">
-            <label className="intake__checkbox">
-              <input
-                type="checkbox"
-                name="consentAccepted"
-                checked={formData.consentAccepted}
-                onChange={handleInputChange}
-                data-testid="consent-checkbox"
-              />
-              <span>
-                I consent to receive treatment and understand the salon policies. I confirm that all
-                information provided is accurate. *
-              </span>
-            </label>
-            {errors.consent && (
-              <span className="intake__error" data-error-for="consent" data-testid="error-consent">
-                {errors.consent}
-              </span>
-            )}
-          </div>
-
-          <div className="intake__actions">
-            <button
-              type="button"
-              className="intake__back"
-              onClick={() => navigate('/booking')}
-              data-testid="back-to-booking"
-            >
-              Back to Scheduling
-            </button>
-            <button type="submit" className="intake__continue" data-testid="continue-to-checkout">
-              Continue to Checkout
-            </button>
-          </div>
-        </form>
+            <div className="intake__actions">
+              <button
+                type="button"
+                className="intake__back"
+                onClick={() => navigate('/booking')}
+                data-testid="back-to-booking"
+              >
+                Back to Scheduling
+              </button>
+              <button type="submit" className="intake__continue" data-testid="continue-to-checkout">
+                Continue to Checkout
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </Layout>
   )

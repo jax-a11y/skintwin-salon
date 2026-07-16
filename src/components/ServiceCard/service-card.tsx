@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 import { GatsbyImage, getImage } from 'gatsby-plugin-image'
 
@@ -26,8 +26,11 @@ interface ServiceCardProps {
   showDescription?: boolean
 }
 
+const CATEGORIES = ['facials', 'treatments', 'consultations', 'packages', 'add-ons']
+
 const ServiceCard: React.FC<ServiceCardProps> = ({ category, showDescription = false }) => {
   const context = useContext(BookingContext)
+  const [activeCategory, setActiveCategory] = useState<string>(category || 'all')
 
   const data = useStaticQuery(graphql`
     query {
@@ -79,74 +82,109 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ category, showDescription = f
     return labels[cat] || cat
   }
 
-  // Filter services by category if specified
-  const filteredServices = category
-    ? Services.filter((service: Service) => service.category === category)
-    : Services.filter((service: Service) => service.category !== 'add-ons')
+  const getCategoryCount = (cat: string) => {
+    return Services.filter((s: Service) => s.category === cat).length
+  }
+
+  const currentCategory = category || activeCategory
+
+  const filteredServices =
+    currentCategory === 'all'
+      ? Services
+      : Services.filter((service: Service) => service.category === currentCategory)
 
   return (
-    <div className="service-container">
-      {filteredServices.map((service: Service) => {
-        const image = filterImage(service.image)
-
-        return (
-          <div
-            key={service.id}
-            className="service"
-            data-testid={`service-card-${service.id}`}
-            data-category={service.category}
+    <div>
+      {!category && (
+        <div className="category-filters" data-testid="category-filter">
+          <button
+            className={`category-filters__button${currentCategory === 'all' ? ' category-filters__button--active active' : ''}`}
+            data-testid="category-all"
+            onClick={() => setActiveCategory('all')}
           >
-            {image && <GatsbyImage image={image} alt={service.name} className="service__image" />}
-
-            <div className="service__content">
-              <span className="service__category">{getCategoryLabel(service.category)}</span>
-              <h2 className="service__title" data-testid="service-name">
-                {service.name}
-              </h2>
-
-              {showDescription && <p className="service__description">{service.description}</p>}
-
-              <div className="service-meta">
-                <span className="service-meta__price" data-testid="service-price">
-                  {formatCurrency(service.price)}
+            All
+          </button>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              className={`category-filters__button${currentCategory === cat ? ' category-filters__button--active active' : ''}`}
+              data-testid={`category-${cat}`}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {getCategoryLabel(cat)}
+              {getCategoryCount(cat) > 0 && (
+                <span className="category-filters__count" data-testid={`category-${cat}-count`}>
+                  {getCategoryCount(cat)}
                 </span>
-                <span className="service-meta__duration" data-testid="service-duration">
-                  {formatDuration(service.durationMinutes)}
-                </span>
-              </div>
-
-              {service.requiresConsultation && (
-                <span className="service__consultation-badge">Consultation Required</span>
               )}
+            </button>
+          ))}
+        </div>
+      )}
 
-              <div className="service__actions">
-                <button
-                  className="service__add-btn"
-                  data-testid={`add-service-${service.id}`}
-                  onClick={() => context?.addService(service.id)}
-                  aria-label={`Add ${service.name} to booking`}
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
+      <div className="service-container">
+        {filteredServices.map((service: Service) => {
+          const image = filterImage(service.image)
+
+          return (
+            <div
+              key={service.id}
+              className="service"
+              data-testid={`service-${service.id}`}
+              data-category={service.category}
+            >
+              {image && <GatsbyImage image={image} alt={service.name} className="service__image" />}
+
+              <div className="service__content">
+                <span className="service__category">{getCategoryLabel(service.category)}</span>
+                <h2 className="service__title" data-testid="service-name">
+                  {service.name}
+                </h2>
+
+                {showDescription && <p className="service__description">{service.description}</p>}
+
+                <div className="service-meta">
+                  <span className="service-meta__price" data-testid="service-price">
+                    {formatCurrency(service.price)}
+                  </span>
+                  <span className="service-meta__duration" data-testid="service-duration">
+                    {formatDuration(service.durationMinutes)}
+                  </span>
+                </div>
+
+                {service.requiresConsultation && (
+                  <span className="service__consultation-badge">Consultation Required</span>
+                )}
+
+                <div className="service__actions">
+                  <button
+                    className="service__add-btn"
+                    data-testid={`add-service-${service.id}`}
+                    onClick={() => context?.addService(service.id)}
+                    aria-label={`Add ${service.name} to booking`}
                   >
-                    <path
-                      d="M8 1v14M1 8h14"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span>Add to Booking</span>
-                </button>
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M8 1v14M1 8h14"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <span>Add to Booking</span>
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
     </div>
   )
 }

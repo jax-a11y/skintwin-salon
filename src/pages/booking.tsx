@@ -147,6 +147,7 @@ const BookingPage: React.FC = () => {
     return (
       <Layout pageTitle="Booking">
         <div className="booking-empty">
+          <h1>Schedule Your Appointment</h1>
           <h2>No Services Selected</h2>
           <p>Please select services before booking.</p>
           <button onClick={() => navigate('/')}>Browse Services</button>
@@ -180,12 +181,12 @@ const BookingPage: React.FC = () => {
         {/* Date Selection */}
         <section className="booking__section">
           <h2>Select Date</h2>
-          <div className="booking__calendar" data-testid="booking-calendar">
+          <div className="booking__calendar" data-testid="date-picker">
             {availableDates.map((date) => (
               <button
                 key={date}
                 data-date={date}
-                className={`date-btn ${selectedDate === date ? 'date-btn--selected' : ''}`}
+                className={`date-btn ${selectedDate === date ? 'date-btn--selected date-picker__day--selected' : ''}`}
                 onClick={() => setSelectedDate(date)}
               >
                 {formatDate(date)}
@@ -230,8 +231,9 @@ const BookingPage: React.FC = () => {
               <button
                 key={slot.time}
                 data-time={slot.time}
+                data-testid={`time-slot-${slot.time}`}
                 data-available={slot.available}
-                className={`time-btn ${selectedTime === slot.time ? 'time-btn--selected' : ''} ${!slot.available ? 'time-btn--unavailable' : ''}`}
+                className={`time-btn ${selectedTime === slot.time ? 'time-btn--selected selected' : ''} ${!slot.available ? 'time-btn--unavailable' : ''}`}
                 onClick={() => slot.available && setSelectedTime(slot.time)}
                 disabled={!slot.available}
               >

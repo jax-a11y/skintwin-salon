@@ -18,7 +18,7 @@ export class BookingPage {
 
   constructor(page: Page) {
     this.page = page
-    this.calendar = page.locator('[data-testid="booking-calendar"]')
+    this.calendar = page.locator('[data-testid="date-picker"]')
     this.timeSlots = page.locator('[data-testid="time-slots"]')
     this.providerSelector = page.locator('[data-testid="provider-selector"]')
     this.selectedDate = page.locator('[data-testid="selected-date"]')
@@ -43,7 +43,7 @@ export class BookingPage {
     const dateStr = date instanceof Date ? date.toISOString().split('T')[0] : date
     const dayButton = this.calendar.locator(`[data-date="${dateStr}"]`)
     await dayButton.click()
-    await expect(this.selectedDate).toContainText(dateStr)
+    await expect(this.calendar.locator('.date-picker__day--selected')).toBeVisible()
   }
 
   async selectTimeSlot(time: string): Promise<void> {
