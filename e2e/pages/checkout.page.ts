@@ -135,6 +135,10 @@ export class CheckoutPage {
     await editButton.click()
   }
 
+  /**
+   * Initiates invoice creation by clicking the checkout button,
+   * which triggers the Paystack invoice API call.
+   */
   async createInvoice(): Promise<void> {
     await this.clickCheckout()
   }
