@@ -69,7 +69,7 @@ test.describe('Add Services @smoke', () => {
     await expect(badge).toHaveText('0')
 
     // Add a service
-    await page.locator('.product-meta__cart').first().click()
+    await page.locator('.service__add-btn').first().click()
 
     // Badge should update
     await expect(badge).toHaveText('1')
@@ -86,7 +86,7 @@ test.describe('Add Services - Cart Button', () => {
   })
 
   test('should have accessible add-to-cart buttons', async ({ page }) => {
-    const buttons = page.locator('.product-meta__cart')
+    const buttons = page.locator('.service__add-btn')
     const count = await buttons.count()
 
     for (let i = 0; i < count; i++) {
@@ -100,7 +100,7 @@ test.describe('Add Services - Cart Button', () => {
   })
 
   test('should show visual feedback when service is added', async ({ page }) => {
-    const button = page.locator('.product-meta__cart').first()
+    const button = page.locator('.service__add-btn').first()
 
     // Click to add
     await button.click()

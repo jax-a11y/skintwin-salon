@@ -3,7 +3,8 @@ import BookingContextProvider from './src/context/booking-context'
 
 export const wrapRootElement = BookingContextProvider
 
-export const onRenderBody = ({ setHeadComponents }) => {
+export const onRenderBody = ({ setHeadComponents, setHtmlAttributes }) => {
+  setHtmlAttributes({ lang: 'en' })
   setHeadComponents([
     <link key="google-fonts-preconnect" rel="preconnect" href="https://fonts.googleapis.com" />,
     <link

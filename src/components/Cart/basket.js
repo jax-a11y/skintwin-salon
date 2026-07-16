@@ -4,7 +4,7 @@ import { GatsbyImage, getImage } from 'gatsby-plugin-image'
 
 import './cart.scss'
 
-const Basket = ({ products, status }) => {
+const Basket = ({ products, status, onInvoiceCreated }) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -12,7 +12,7 @@ const Basket = ({ products, status }) => {
       setLoading(true)
     }
 
-    if (status === 'Paid') {
+    if (status === 'Paid' || status === 'Failed') {
       setLoading(false)
     }
   }, [status])
@@ -36,7 +36,7 @@ const Basket = ({ products, status }) => {
     let image = data.allFile.edges.find((image) => {
       return image.node.base === path
     })
-    return getImage(image.node)
+    return image ? getImage(image.node) : null
   }
 
   const parseCurrency = (amount) => {
@@ -45,7 +45,7 @@ const Basket = ({ products, status }) => {
 
   const calculateTotal = () => {
     let total = products.reduce((acc, cv) => {
-      return acc + cv.price
+      return acc + cv.price * (cv.quantity || 1)
     }, 0)
 
     return parseCurrency(total)
@@ -76,7 +76,7 @@ const Basket = ({ products, status }) => {
       line_items.push({
         name: product.name,
         amount: product.price * 100,
-        quantity: product.quantity,
+        quantity: product.quantity || 1,
       })
     }
 
@@ -93,6 +93,7 @@ const Basket = ({ products, status }) => {
       .then((data) => data.json())
       .then((response) => {
         const { id, offline_reference } = response.data
+        if (onInvoiceCreated) onInvoiceCreated(id)
         pushToTerminal(id, offline_reference)
       })
       .catch(function (err) {
@@ -106,29 +107,30 @@ const Basket = ({ products, status }) => {
         <div className="menu-list__prompt">Kindly complete your payment on the Terminal</div>
       )}
       {products &&
-        products.map((product) => (
-          <div key={product.id} className="menu-list__body">
-            <div className="menu__content">
-              <div className="menu__image">
-                <GatsbyImage
-                  image={filterImage(product.image)}
-                  alt={product.name}
-                  placeholder="blurred"
-                />
+        products.map((product) => {
+          const image = filterImage(product.image)
+          return (
+            <div key={product.id} className="menu-list__body">
+              <div className="menu__content">
+                {image && (
+                  <div className="menu__image">
+                    <GatsbyImage image={image} alt={product.name} placeholder="blurred" />
+                  </div>
+                )}
+                <div className="menu__description">
+                  <h4>{product.name}</h4>
+                  <span>{product.durationMinutes ? `${product.durationMinutes} min` : ''}</span>
+                </div>
               </div>
-              <div className="menu__description">
-                <h4>{product.name}</h4>
-                <span>{product.calories} cal</span>
+              <div className="menu__quantity">
+                <span>Qty: {product.quantity || 1}</span>
+              </div>
+              <div className="menu__price">
+                <span>{parseCurrency(product.price)}</span>
               </div>
             </div>
-            <div className="menu__quantity">
-              <span>Qty: {product.quantity}</span>
-            </div>
-            <div className="menu__price">
-              <span>{parseCurrency(product.price)}</span>
-            </div>
-          </div>
-        ))}
+          )
+        })}
       <div className="receipt">
         <div className="receipt__label">
           <span>

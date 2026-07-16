@@ -34,9 +34,16 @@ export class HomePage {
   }
 
   async addServiceToBooking(serviceId: string): Promise<void> {
-    const addButton = this.page.locator(
-      `[data-testid="add-service-${serviceId}"], .product:has([data-id="${serviceId}"]) .product-meta__cart, .product:nth-child(${serviceId}) .product-meta__cart`
-    )
+    // Support direct service ID (e.g. 'srv-001') or numeric position (e.g. '1')
+    const isNumericPosition = /^\d+$/.test(serviceId)
+    let addButton
+    if (isNumericPosition) {
+      addButton = this.page.locator(
+        `.service:nth-child(${serviceId}) [data-testid^="add-service-"], .product:nth-child(${serviceId}) .product-meta__cart`
+      )
+    } else {
+      addButton = this.page.locator(`[data-testid="add-service-${serviceId}"]`)
+    }
     await addButton.click()
   }
 
