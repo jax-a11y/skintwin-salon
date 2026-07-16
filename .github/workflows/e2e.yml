@@ -55,6 +55,7 @@ jobs:
             public/
             .cache/
           retention-days: 1
+          include-hidden-files: true
 
   e2e-chromium:
     name: E2E - Chromium
