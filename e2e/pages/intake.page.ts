@@ -128,17 +128,4 @@ export class IntakePage {
     await this.phoneInput.clear()
     await this.consentCheckbox.uncheck()
   }
-
-  async fillClientInfo(details: {
-    firstName: string
-    lastName: string
-    email: string
-    phone: string
-  }): Promise<void> {
-    return this.fillClientForm(details)
-  }
-
-  async submitForm(): Promise<void> {
-    return this.continueToCheckout()
-  }
 }

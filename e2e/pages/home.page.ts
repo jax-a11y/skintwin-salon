@@ -90,8 +90,4 @@ export class HomePage {
     }
     return names
   }
-
-  async addService(serviceId: string): Promise<void> {
-    return this.addServiceToBooking(serviceId)
-  }
 }

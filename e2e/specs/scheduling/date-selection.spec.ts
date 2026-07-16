@@ -12,7 +12,7 @@ test.describe('Date Selection', () => {
     
     // Add a service first
     await homePage.goto()
-    await homePage.addService('srv-001')
+    await homePage.addServiceToBooking('srv-001')
     await bookingPage.goto()
   })
 

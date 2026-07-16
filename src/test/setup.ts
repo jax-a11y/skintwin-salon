@@ -23,13 +23,13 @@ vi.mock('gatsby', async () => {
     graphql: vi.fn(),
     Link: vi.fn().mockImplementation(
       ({
-        activeClassName: _ac,
-        activeStyle: _as,
-        getProps: _gp,
-        innerRef: _ir,
-        partiallyActive: _pa,
+        activeClassName: _activeClassName,
+        activeStyle: _activeStyle,
+        getProps: _getProps,
+        innerRef: _innerRef,
+        partiallyActive: _partiallyActive,
         ref: _ref,
-        replace: _rep,
+        replace: _replace,
         to,
         ...rest
       }: GatsbyLinkProps) =>
