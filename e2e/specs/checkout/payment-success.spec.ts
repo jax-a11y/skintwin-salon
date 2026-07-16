@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { CheckoutPage } from '../../pages/checkout.page'
 import { mockPaystackApi, simulatePaymentSuccess } from '../../mocks/paystack'
+import { simulatePaymentPending } from '../../mocks/pusher'
 
 test.describe('Payment Success', () => {
   let checkoutPage: CheckoutPage
@@ -19,6 +20,9 @@ test.describe('Payment Success', () => {
     // Start payment
     await checkoutPage.createInvoice()
     await checkoutPage.pushToTerminal()
+
+    // Simulate pending state via Pusher event
+    await simulatePaymentPending(page)
 
     // Wait for pending state
     await expect(page.getByTestId('payment-status-pending')).toBeVisible()
@@ -46,7 +50,7 @@ test.describe('Payment Success', () => {
     await simulatePaymentSuccess(page)
 
     // Should navigate to confirmation or show receipt
-    await expect(page.getByText(/confirmed|receipt/i)).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText(/confirmed|receipt/i).first()).toBeVisible({ timeout: 10000 })
   })
 
   test('should clear cart after successful payment', async ({ page }) => {

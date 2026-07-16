@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { BookingPage } from '../../pages/booking.page'
 import { HomePage } from '../../pages/home.page'
+import { getTomorrowDate } from '../../helpers/booking-flow'
 
 test.describe('Time Slot Selection', () => {
   let bookingPage: BookingPage
@@ -13,12 +14,10 @@ test.describe('Time Slot Selection', () => {
     // Add a service and go to booking
     await homePage.goto()
     await homePage.addServiceToBooking('srv-001')
-    await bookingPage.goto()
+    await homePage.proceedToBooking()
 
     // Select a date
-    const tomorrow = new Date()
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    await bookingPage.selectDate(tomorrow)
+    await bookingPage.selectDate(getTomorrowDate())
   })
 
   test('should display available time slots', async () => {

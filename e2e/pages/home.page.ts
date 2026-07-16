@@ -13,7 +13,7 @@ export class HomePage {
 
   constructor(page: Page) {
     this.page = page
-    this.serviceCards = page.locator('[data-testid="service-card"], .product')
+    this.serviceCards = page.locator('[data-testid^="service-srv-"], .service')
     this.bookingButton = page.locator('[data-testid="proceed-to-booking"], .nav__cart')
     this.bookingCount = page.locator('[data-testid="booking-count"], .nav__cart span')
     this.categoryFilters = page.locator('[data-testid="category-filter"]')
@@ -57,7 +57,7 @@ export class HomePage {
   }
 
   async filterByCategory(category: string): Promise<void> {
-    const filter = this.categoryFilters.locator(`[data-category="${category}"]`)
+    const filter = this.page.locator(`[data-testid="category-${category}"]`)
     await filter.click()
   }
 
@@ -91,11 +91,13 @@ export class HomePage {
   }
 
   async getCategories(): Promise<string[]> {
-    const categories = await this.categoryFilters.locator('[data-category]').all()
+    const categories = await this.categoryFilters
+      .locator('[data-testid^="category-"]:not([data-testid="category-all"])')
+      .all()
     const names: string[] = []
     for (const cat of categories) {
-      const name = await cat.getAttribute('data-category')
-      if (name) names.push(name)
+      const testId = await cat.getAttribute('data-testid')
+      if (testId) names.push(testId.replace('category-', ''))
     }
     return names
   }

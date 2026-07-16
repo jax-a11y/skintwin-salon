@@ -277,7 +277,12 @@ const IntakePage: React.FC = () => {
         )}
 
         {activeTab === 'new' && (
-          <form onSubmit={handleSubmit} className="intake__form" data-testid="client-form">
+          <form
+            onSubmit={handleSubmit}
+            className="intake__form"
+            data-testid="client-form"
+            noValidate
+          >
             <div className="intake__row">
               <div className="intake__field">
                 <label htmlFor="firstName">First Name *</label>
@@ -360,9 +365,10 @@ const IntakePage: React.FC = () => {
             </div>
 
             <div className="intake__consent">
-              <label className="intake__checkbox">
+              <label className="intake__checkbox" htmlFor="consentAccepted">
                 <input
                   type="checkbox"
+                  id="consentAccepted"
                   name="consentAccepted"
                   checked={formData.consentAccepted}
                   onChange={handleInputChange}

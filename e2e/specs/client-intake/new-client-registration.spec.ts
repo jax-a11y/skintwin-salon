@@ -44,7 +44,7 @@ test.describe('New Client Registration', () => {
     await intakePage.continueToCheckout()
 
     // Should show validation errors
-    await expect(intakePage.page.getByText(/required/i)).toBeVisible()
+    await expect(intakePage.page.getByText(/required/i).first()).toBeVisible()
   })
 
   test('should validate email format', async ({ page }) => {
@@ -58,7 +58,7 @@ test.describe('New Client Registration', () => {
     await intakePage.continueToCheckout()
 
     // Should show email validation error
-    const emailError = page.getByText(/valid email/i)
+    const emailError = page.getByTestId('error-email')
     await expect(emailError).toBeVisible()
   })
 
@@ -73,7 +73,7 @@ test.describe('New Client Registration', () => {
     await intakePage.continueToCheckout()
 
     // Should show phone validation error
-    const phoneError = page.getByText(/phone/i)
+    const phoneError = page.getByTestId('error-phone')
     await expect(phoneError).toBeVisible()
   })
 })
