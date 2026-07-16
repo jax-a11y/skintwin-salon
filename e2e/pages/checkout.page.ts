@@ -134,4 +134,19 @@ export class CheckoutPage {
     const editButton = this.page.locator('[data-testid="edit-booking"]')
     await editButton.click()
   }
+
+  /**
+   * Initiates invoice creation by clicking the checkout button,
+   * which triggers the Paystack invoice API call.
+   */
+  async createInvoice(): Promise<void> {
+    await this.clickCheckout()
+  }
+
+  async pushToTerminal(): Promise<void> {
+    const terminalButton = this.page.locator('[data-testid="push-to-terminal"]')
+    if (await terminalButton.isVisible()) {
+      await terminalButton.click()
+    }
+  }
 }

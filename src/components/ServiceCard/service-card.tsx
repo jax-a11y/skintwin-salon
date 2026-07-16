@@ -101,7 +101,6 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ category, showDescription = f
                 image={image}
                 alt={service.name}
                 className="service__image"
-                placeholder="blurred"
               />
             )}
 
