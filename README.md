@@ -14,7 +14,7 @@ A Gatsby 4 salon booking and checkout experience with Paystack Terminal integrat
 
 ## 📋 Requirements
 
-- **Node.js**: 18.x LTS (required for Gatsby 4 compatibility)
+- **Node.js**: 20.x LTS (20.19.0+)
 - **Paystack Terminal**: Required for payment flow ([request via support@paystack.com](mailto:support@paystack.com))
 - **Pusher Account**: For real-time payment updates ([create channel](https://pusher.com/channels))
 - **Gatsby Cloud**: For deployment ([deploy now](https://www.gatsbyjs.com/dashboard/deploynow?url=https://github.com/jax-a11y/skintwin-salon))
