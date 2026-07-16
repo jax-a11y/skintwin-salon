@@ -113,10 +113,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ category, showDescription = f
             >
               {getCategoryLabel(cat)}
               {getCategoryCount(cat) > 0 && (
-                <span
-                  className="category-filters__count"
-                  data-testid={`category-${cat}-count`}
-                >
+                <span className="category-filters__count" data-testid={`category-${cat}-count`}>
                   {getCategoryCount(cat)}
                 </span>
               )}

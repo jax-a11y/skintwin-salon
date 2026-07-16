@@ -43,7 +43,7 @@ export class BookingPage {
     const dateStr = date instanceof Date ? date.toISOString().split('T')[0] : date
     const dayButton = this.calendar.locator(`[data-date="${dateStr}"]`)
     await dayButton.click()
-    await this.page.waitForTimeout(100)
+    await expect(this.calendar.locator('.date-picker__day--selected')).toBeVisible()
   }
 
   async selectTimeSlot(time: string): Promise<void> {

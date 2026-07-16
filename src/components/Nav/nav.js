@@ -30,8 +30,18 @@ const Nav = () => {
             </Link>
             <ul className="nav__items">
               <li>
-                <Link to="/cart" className="nav__cart" aria-label={`View cart, ${totalCount} item${totalCount !== 1 ? 's' : ''}`}>
-                  <svg width="16" height="16" fill="#f5ebdc" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <Link
+                  to="/cart"
+                  className="nav__cart"
+                  aria-label={`View cart, ${totalCount} item${totalCount !== 1 ? 's' : ''}`}
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    fill="#f5ebdc"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
                     <path
                       d="M6.5 15.125a.75.75 0 100-1.5.75.75 0 000 1.5zm6 0a.75.75 0 100-1.5.75.75 0 000 1.5zM.875.875h2.25l2.025 9.3a1.5 1.5 0 001.5 1.2h5.775a1.5 1.5 0 001.5-1.2l1.2-6.3h-10.8"
                       stroke="#f5ebdc"

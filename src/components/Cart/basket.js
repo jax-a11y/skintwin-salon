@@ -119,7 +119,7 @@ const Basket = ({ products, status, onInvoiceCreated }) => {
                 )}
                 <div className="menu__description">
                   <h4>{product.name}</h4>
-                  <span>{product.durationMinutes ? `${product.durationMinutes} min` : ''}</span>
+                  {product.durationMinutes && <span>{`${product.durationMinutes} min`}</span>}
                 </div>
               </div>
               <div className="menu__quantity">

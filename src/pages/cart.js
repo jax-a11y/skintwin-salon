@@ -13,11 +13,9 @@ const Cart = () => {
   const [products, setProducts] = useState([])
   const [invoiceId, setInvoiceId] = useState(null)
   const context = useContext(CartContext)
-  const productIds = context?.productIds || []
 
   useEffect(() => {
-    const PusherClient =
-      typeof window !== 'undefined' && window.Pusher ? window.Pusher : Pusher
+    const PusherClient = typeof window !== 'undefined' && window.Pusher ? window.Pusher : Pusher
 
     const pusher = new PusherClient(process.env.GATSBY_PUSHER_KEY || 'test-key', {
       cluster: 'eu',
@@ -56,8 +54,9 @@ const Cart = () => {
   }, [])
 
   useEffect(() => {
-    setProducts(fetchServices(productIds))
-  }, [productIds])
+    const ids = context?.productIds || []
+    setProducts(fetchServices(ids))
+  }, [context?.productIds])
 
   const fetchServices = (ids) => {
     return Services.filter((service) => ids.includes(service.id))
@@ -78,7 +77,10 @@ const Cart = () => {
           </>
         ) : event === 'Failed' ? (
           <div className="cart__failed">
-            <div data-testid="payment-status-failed" className="cart__payment-status cart__payment-status--failed">
+            <div
+              data-testid="payment-status-failed"
+              className="cart__payment-status cart__payment-status--failed"
+            >
               <p>Payment failed or was declined. Please try again.</p>
             </div>
             <button
@@ -98,9 +100,14 @@ const Cart = () => {
           </div>
         ) : (
           <div className="cart__content">
-            <span className="pill" data-testid="payment-status">{event}</span>
+            <span className="pill" data-testid="payment-status">
+              {event}
+            </span>
             {event === 'Pending' && (
-              <div data-testid="payment-status-pending" className="cart__payment-status cart__payment-status--pending">
+              <div
+                data-testid="payment-status-pending"
+                className="cart__payment-status cart__payment-status--pending"
+              >
                 Kindly complete your payment on the Terminal
               </div>
             )}

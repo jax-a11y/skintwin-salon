@@ -36,14 +36,10 @@ const Receipt = ({ invoiceId }) => {
       <h1>Payment Confirmed! 🚀</h1>
       <p>Your booking is confirmed. Kindly head over to the counter.</p>
       <p>Receipt: Your booking receipt has been noted.</p>
-      <p data-testid="confirmation-number">
-        Confirmation Number: {confirmationNumber}
-      </p>
+      <p data-testid="confirmation-number">Confirmation Number: {confirmationNumber}</p>
       <Link to="/">Go Home</Link>
     </div>
   )
 }
-
-export default Receipt
 
 export default Receipt
