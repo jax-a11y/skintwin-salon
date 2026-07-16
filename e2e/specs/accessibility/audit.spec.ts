@@ -212,7 +212,7 @@ test.describe('Accessibility Audit', () => {
  * Check if a violation is a known/acceptable issue
  */
 function isKnownIssue(violation: { id: string }): boolean {
-  const knownIssues = [
+  const knownIssues: string[] = [
     // Add IDs of known issues that are acceptable
     // 'color-contrast', // If using custom contrast that passes manual review
   ]

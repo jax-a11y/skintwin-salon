@@ -1,47 +1,60 @@
 import '@testing-library/jest-dom'
+import { vi, beforeAll, afterAll } from 'vitest'
+
+interface GatsbyLinkProps {
+  activeClassName?: string
+  activeStyle?: Record<string, unknown>
+  getProps?: (props: unknown) => unknown
+  innerRef?: unknown
+  partiallyActive?: boolean
+  ref?: unknown
+  replace?: boolean
+  to: string
+  [key: string]: unknown
+}
 
 // Mock Gatsby's navigate function
-jest.mock('gatsby', () => {
-  const React = require('react')
-  const gatsby = jest.requireActual('gatsby')
+vi.mock('gatsby', async () => {
+  const { createElement } = await import('react')
+  const gatsby = await vi.importActual<typeof import('gatsby')>('gatsby')
 
   return {
-    ...gatsby,
-    graphql: jest.fn(),
-    Link: jest.fn().mockImplementation(
+    ...(gatsby as object),
+    graphql: vi.fn(),
+    Link: vi.fn().mockImplementation(
       ({
-        activeClassName,
-        activeStyle,
-        getProps,
-        innerRef,
-        partiallyActive,
-        ref,
-        replace,
+        activeClassName: _ac,
+        activeStyle: _as,
+        getProps: _gp,
+        innerRef: _ir,
+        partiallyActive: _pa,
+        ref: _ref,
+        replace: _rep,
         to,
         ...rest
-      }) =>
-        React.createElement('a', {
-          ...rest,
+      }: GatsbyLinkProps) =>
+        createElement('a', {
+          ...(rest as Record<string, unknown>),
           href: to,
         })
     ),
-    StaticQuery: jest.fn(),
-    useStaticQuery: jest.fn(),
-    navigate: jest.fn(),
+    StaticQuery: vi.fn(),
+    useStaticQuery: vi.fn(),
+    navigate: vi.fn(),
   }
 })
 
 // Mock Pusher
-jest.mock('pusher-js', () => {
-  return jest.fn().mockImplementation(() => ({
-    subscribe: jest.fn().mockReturnValue({
-      bind: jest.fn(),
-      unbind: jest.fn(),
+vi.mock('pusher-js', () => ({
+  default: vi.fn().mockImplementation(() => ({
+    subscribe: vi.fn().mockReturnValue({
+      bind: vi.fn(),
+      unbind: vi.fn(),
     }),
-    unsubscribe: jest.fn(),
-    disconnect: jest.fn(),
-  }))
-})
+    unsubscribe: vi.fn(),
+    disconnect: vi.fn(),
+  })),
+}))
 
 // Mock environment variables
 process.env.GATSBY_PUSHER_KEY = 'test-pusher-key'
