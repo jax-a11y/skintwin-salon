@@ -19,14 +19,19 @@ const ConfirmationPage = () => {
       if (!details) return null
       return { ...details, quantity: selection.quantity }
     })
-    .filter((service): service is (typeof Services)[number] & { quantity: number } => service !== null)
+    .filter(
+      (service): service is (typeof Services)[number] & { quantity: number } => service !== null
+    )
 
   // Calculate total duration and price
   const totalDuration = selectedServices.reduce((sum, service) => {
     return sum + ((service.durationMinutes || 0) + (service.bufferMinutes || 0)) * service.quantity
   }, 0)
 
-  const totalPrice = selectedServices.reduce((sum, service) => sum + service.price * service.quantity, 0)
+  const totalPrice = selectedServices.reduce(
+    (sum, service) => sum + service.price * service.quantity,
+    0
+  )
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-NG', {
@@ -96,7 +101,8 @@ const ConfirmationPage = () => {
               <div className="confirmation__item">
                 <dt>Time</dt>
                 <dd data-testid="confirmation-time">
-                  {appointmentDetails.startTime || 'Not scheduled'} - {appointmentDetails.endTime || ''}
+                  {appointmentDetails.startTime || 'Not scheduled'} -{' '}
+                  {appointmentDetails.endTime || ''}
                 </dd>
               </div>
 
@@ -122,7 +128,8 @@ const ConfirmationPage = () => {
                     {service.quantity > 1 && ` (x${service.quantity})`}
                   </span>
                   <span className="confirmation__service-details">
-                    {service.durationMinutes} min • {formatCurrency(service.price * service.quantity)}
+                    {service.durationMinutes} min •{' '}
+                    {formatCurrency(service.price * service.quantity)}
                   </span>
                 </li>
               ))}
@@ -192,7 +199,9 @@ const ConfirmationPage = () => {
           <h3>Important Information</h3>
           <ul>
             <li>Please arrive 10 minutes before your scheduled appointment time.</li>
-            <li>If you need to reschedule or cancel, please contact us at least 24 hours in advance.</li>
+            <li>
+              If you need to reschedule or cancel, please contact us at least 24 hours in advance.
+            </li>
             <li>
               A confirmation email has been sent to{' '}
               {clientDetails.email || 'the email address you provided during booking'}.

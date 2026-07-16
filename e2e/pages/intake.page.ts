@@ -25,7 +25,9 @@ export class IntakePage {
     this.lastNameInput = page.locator('[data-testid="last-name"], input[name="lastName"]')
     this.emailInput = page.locator('[data-testid="email"], input[name="email"]')
     this.phoneInput = page.locator('[data-testid="phone"], input[name="phone"]')
-    this.consentCheckbox = page.locator('[data-testid="consent-checkbox"], input[type="checkbox"][name="consent"]')
+    this.consentCheckbox = page.locator(
+      '[data-testid="consent-checkbox"], input[type="checkbox"][name="consent"]'
+    )
     this.lookupButton = page.locator('[data-testid="lookup-client"]')
     this.lookupEmailInput = page.locator('[data-testid="lookup-email"]')
     this.continueButton = page.locator('[data-testid="continue-to-checkout"]')
@@ -118,7 +120,9 @@ export class IntakePage {
     const phone = await this.phoneInput.inputValue()
     const consent = await this.consentCheckbox.isChecked()
 
-    return firstName.length > 0 && lastName.length > 0 && email.length > 0 && phone.length > 0 && consent
+    return (
+      firstName.length > 0 && lastName.length > 0 && email.length > 0 && phone.length > 0 && consent
+    )
   }
 
   async clearForm(): Promise<void> {

@@ -24,7 +24,9 @@ test.describe('Browse Services @smoke', () => {
     const firstCard = cards[0]
     await expect(firstCard).toBeVisible()
     await expect(firstCard.locator('.product__title, [data-testid="service-name"]')).toBeVisible()
-    await expect(firstCard.locator('.product-meta__price, [data-testid="service-price"]')).toBeVisible()
+    await expect(
+      firstCard.locator('.product-meta__price, [data-testid="service-price"]')
+    ).toBeVisible()
   })
 
   test('should navigate between home and cart', async ({ page }) => {

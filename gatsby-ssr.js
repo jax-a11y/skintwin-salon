@@ -1,15 +1,11 @@
-import React from "react"
-import BookingContextProvider from "./src/context/booking-context"
+import React from 'react'
+import BookingContextProvider from './src/context/booking-context'
 
 export const wrapRootElement = BookingContextProvider
 
 export const onRenderBody = ({ setHeadComponents }) => {
   setHeadComponents([
-    <link
-      key="google-fonts-preconnect"
-      rel="preconnect"
-      href="https://fonts.googleapis.com"
-    />,
+    <link key="google-fonts-preconnect" rel="preconnect" href="https://fonts.googleapis.com" />,
     <link
       key="google-fonts-preconnect-gstatic"
       rel="preconnect"

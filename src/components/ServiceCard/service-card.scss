@@ -9,7 +9,9 @@
   background-color: var(--primary-color);
   border-radius: 12px;
   box-shadow: 0 4px 12px 0 var(--shadow);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   overflow: hidden;
 
   &:hover {

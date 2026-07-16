@@ -23,10 +23,10 @@ serve only its own frontend.
 
 ## Events
 
-| Topic                 | Direction  |
-|-----------------------|------------|
-| `order.placed`        | publishes  |
-| `appointment.created` | publishes  |
+| Topic                 | Direction |
+| --------------------- | --------- |
+| `order.placed`        | publishes |
+| `appointment.created` | publishes |
 
 Payload schemas live at `contracts/events/<topic>.schema.json` in the
 [hub repo](https://github.com/jax-a11y/skintwin-ecosystem-design).

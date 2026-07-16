@@ -1,7 +1,7 @@
 /**
  * Check Availability API Endpoint
  * GET /api/appointments/availability
- * 
+ *
  * Query params:
  * - date: YYYY-MM-DD
  * - providerId: optional provider ID
@@ -31,9 +31,7 @@ export default async function checkAvailability(req, res) {
     const dayOfWeek = requestDate.toLocaleDateString('en-US', { weekday: 'lowercase' })
 
     // Get providers to check
-    const providersToCheck = providerId
-      ? Providers.filter((p) => p.id === providerId)
-      : Providers
+    const providersToCheck = providerId ? Providers.filter((p) => p.id === providerId) : Providers
 
     if (providersToCheck.length === 0) {
       return res.status(404).json({

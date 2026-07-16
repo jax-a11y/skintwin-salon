@@ -45,7 +45,9 @@ export class CheckoutPage {
   }
 
   async getServices(): Promise<string[]> {
-    const services = await this.serviceList.locator('[data-testid="service-item"], .menu__description h4').all()
+    const services = await this.serviceList
+      .locator('[data-testid="service-item"], .menu__description h4')
+      .all()
     const names: string[] = []
     for (const service of services) {
       const name = await service.textContent()

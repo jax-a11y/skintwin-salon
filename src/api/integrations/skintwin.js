@@ -1,12 +1,9 @@
 /**
  * SkinTwin AI Platform Integration Connector
  * POST /api/integrations/skintwin
- * 
+ *
  * Syncs appointments and client data with the skintwin-ai platform
  */
-
-const SKINTWIN_API = process.env.SKINTWIN_API_URL || 'https://api.skintwin.ai'
-const SKINTWIN_API_KEY = process.env.SKINTWIN_API_KEY
 
 export default async function skintwinIntegration(req, res) {
   if (req.method !== 'POST') {
@@ -68,35 +65,35 @@ async function syncAppointment(appointment) {
   }
 
   // Transform to skintwin-ai format
-  const transformed = {
-    externalId: appointment.id,
-    source: 'skintwin-salon',
-    scheduledAt: appointment.startTime,
-    duration: appointment.durationMinutes,
-    services: appointment.services.map((s) => ({
-      externalId: s.serviceId,
-      name: s.name,
-      category: s.category,
-    })),
-    provider: appointment.provider
-      ? {
-          externalId: appointment.provider.id,
-          name: appointment.provider.name,
-        }
-      : null,
-    client: appointment.client
-      ? {
-          externalId: appointment.client.id,
-          email: appointment.client.email,
-        }
-      : null,
-    status: mapStatus(appointment.status),
-    metadata: {
-      roomId: appointment.roomId,
-      notes: appointment.notes,
-      createdAt: appointment.createdAt,
-    },
-  }
+  // const transformed = {
+  //   externalId: appointment.id,
+  //   source: 'skintwin-salon',
+  //   scheduledAt: appointment.startTime,
+  //   duration: appointment.durationMinutes,
+  //   services: appointment.services.map((s) => ({
+  //     externalId: s.serviceId,
+  //     name: s.name,
+  //     category: s.category,
+  //   })),
+  //   provider: appointment.provider
+  //     ? {
+  //         externalId: appointment.provider.id,
+  //         name: appointment.provider.name,
+  //       }
+  //     : null,
+  //   client: appointment.client
+  //     ? {
+  //         externalId: appointment.client.id,
+  //         email: appointment.client.email,
+  //       }
+  //     : null,
+  //   status: _mapStatus(appointment.status),
+  //   metadata: {
+  //     roomId: appointment.roomId,
+  //     notes: appointment.notes,
+  //     createdAt: appointment.createdAt,
+  //   },
+  // }
 
   // In production, would make API call to skintwin-ai
   // const response = await fetch(`${SKINTWIN_API}/api/integrations/appointments/sync`, {
@@ -124,27 +121,27 @@ async function syncClient(client) {
     throw new Error('Client data with ID is required')
   }
 
-  const transformed = {
-    externalId: client.id,
-    source: 'skintwin-salon',
-    profile: {
-      firstName: client.firstName,
-      lastName: client.lastName,
-      email: client.email,
-      phone: client.phone,
-    },
-    skin: {
-      type: client.skinType,
-      concerns: client.skinConcerns || [],
-      allergies: client.allergies || [],
-    },
-    preferences: client.preferences || {},
-    consentStatus: {
-      dataProcessing: client.consentAccepted,
-      marketing: client.marketingConsent || false,
-      photoRelease: client.photoReleaseConsent || false,
-    },
-  }
+  // const transformed = {
+  //   externalId: client.id,
+  //   source: 'skintwin-salon',
+  //   profile: {
+  //     firstName: client.firstName,
+  //     lastName: client.lastName,
+  //     email: client.email,
+  //     phone: client.phone,
+  //   },
+  //   skin: {
+  //     type: client.skinType,
+  //     concerns: client.skinConcerns || [],
+  //     allergies: client.allergies || [],
+  //   },
+  //   preferences: client.preferences || {},
+  //   consentStatus: {
+  //     dataProcessing: client.consentAccepted,
+  //     marketing: client.marketingConsent || false,
+  //     photoRelease: client.photoReleaseConsent || false,
+  //   },
+  // }
 
   return {
     synced: true,
@@ -157,7 +154,7 @@ async function syncClient(client) {
 /**
  * Get AI-powered treatment recommendations
  */
-async function getRecommendations(clientId, concerns) {
+async function getRecommendations(clientId, _concerns) {
   if (!clientId) {
     throw new Error('Client ID is required')
   }
@@ -205,18 +202,18 @@ async function logTreatment(treatment) {
     throw new Error('Treatment data with appointment ID is required')
   }
 
-  const treatmentLog = {
-    appointmentId: treatment.appointmentId,
-    clientId: treatment.clientId,
-    providerId: treatment.providerId,
-    completedAt: new Date().toISOString(),
-    services: treatment.services,
-    notes: treatment.notes,
-    productsUsed: treatment.productsUsed || [],
-    beforePhotos: treatment.beforePhotos || [],
-    afterPhotos: treatment.afterPhotos || [],
-    nextRecommendations: treatment.nextRecommendations || [],
-  }
+  // const treatmentLog = {
+  //   appointmentId: treatment.appointmentId,
+  //   clientId: treatment.clientId,
+  //   providerId: treatment.providerId,
+  //   completedAt: new Date().toISOString(),
+  //   services: treatment.services,
+  //   notes: treatment.notes,
+  //   productsUsed: treatment.productsUsed || [],
+  //   beforePhotos: treatment.beforePhotos || [],
+  //   afterPhotos: treatment.afterPhotos || [],
+  //   nextRecommendations: treatment.nextRecommendations || [],
+  // }
 
   return {
     logged: true,
@@ -228,7 +225,7 @@ async function logTreatment(treatment) {
 /**
  * Map internal status to skintwin-ai status
  */
-function mapStatus(internalStatus) {
+function _mapStatus(internalStatus) {
   const statusMap = {
     draft: 'pending',
     scheduled: 'confirmed',

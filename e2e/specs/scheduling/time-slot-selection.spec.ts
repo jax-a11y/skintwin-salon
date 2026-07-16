@@ -9,12 +9,12 @@ test.describe('Time Slot Selection', () => {
   test.beforeEach(async ({ page }) => {
     homePage = new HomePage(page)
     bookingPage = new BookingPage(page)
-    
+
     // Add a service and go to booking
     await homePage.goto()
     await homePage.addServiceToBooking('srv-001')
     await bookingPage.goto()
-    
+
     // Select a date
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
@@ -27,7 +27,7 @@ test.describe('Time Slot Selection', () => {
 
   test('should allow selecting a time slot', async ({ page }) => {
     const timeSlot = page.getByTestId('time-slot-09:00')
-    
+
     if (await timeSlot.isVisible()) {
       await timeSlot.click()
       await expect(timeSlot).toHaveClass(/selected/)
@@ -42,7 +42,7 @@ test.describe('Time Slot Selection', () => {
 
   test('should disable unavailable slots', async ({ page }) => {
     const unavailableSlot = page.locator('[data-testid^="time-slot-"][disabled]')
-    
+
     if (await unavailableSlot.first().isVisible()) {
       await expect(unavailableSlot.first()).toBeDisabled()
     }
@@ -50,10 +50,10 @@ test.describe('Time Slot Selection', () => {
 
   test('should update end time based on service duration', async ({ page }) => {
     const timeSlot = page.getByTestId('time-slot-10:00')
-    
+
     if (await timeSlot.isVisible()) {
       await timeSlot.click()
-      
+
       // End time should reflect service duration
       const endTime = page.getByTestId('appointment-end-time')
       if (await endTime.isVisible()) {
@@ -65,10 +65,10 @@ test.describe('Time Slot Selection', () => {
 
   test('should show selected time in summary', async ({ page }) => {
     const timeSlot = page.getByTestId('time-slot-11:00')
-    
+
     if (await timeSlot.isVisible()) {
       await timeSlot.click()
-      
+
       const summary = page.getByTestId('booking-summary')
       if (await summary.isVisible()) {
         await expect(summary).toContainText('11:00')

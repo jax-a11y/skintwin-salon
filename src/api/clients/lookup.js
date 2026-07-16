@@ -1,7 +1,7 @@
 /**
  * Lookup Client API Endpoint
  * GET /api/clients/lookup
- * 
+ *
  * Query params:
  * - email: client email address
  * - phone: client phone number (alternative)

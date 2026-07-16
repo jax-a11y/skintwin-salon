@@ -121,9 +121,7 @@ describe('ErrorMonitor – development mode', () => {
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
     const { errorMonitor: devMonitor } = await import('./error-monitor')
     devMonitor.init()
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Sentry DSN not configured')
-    )
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Sentry DSN not configured'))
     consoleSpy.mockRestore()
   })
 
@@ -174,19 +172,13 @@ describe('ErrorMonitor – development mode', () => {
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
     const { errorMonitor: devMonitor } = await import('./error-monitor')
     const tx = devMonitor.startTransaction('dev-tx', 'navigation')
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Transaction started: dev-tx')
-    )
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Transaction started: dev-tx'))
     expect(typeof tx!.finish).toBe('function')
     expect(typeof tx!.setTag).toBe('function')
     tx!.finish()
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Transaction finished: dev-tx')
-    )
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Transaction finished: dev-tx'))
     tx!.setTag('key', 'val')
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Transaction tag: key=val')
-    )
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Transaction tag: key=val'))
     consoleSpy.mockRestore()
   })
 })

@@ -21,15 +21,15 @@ test.describe('New Client Registration', () => {
       firstName: 'Test',
       lastName: 'Client',
       email: 'test.client@example.com',
-      phone: '+2348012345678'
+      phone: '+2348012345678',
     })
-    
+
     // Accept consent
     await intakePage.acceptConsent()
-    
+
     // Submit form
     await intakePage.continueToCheckout()
-    
+
     // Should proceed to next step or show success
     await expect(intakePage.page.getByTestId('client-saved-message'))
       .toBeVisible({ timeout: 5000 })
@@ -42,7 +42,7 @@ test.describe('New Client Registration', () => {
   test('should validate required fields', async () => {
     // Try to submit empty form
     await intakePage.continueToCheckout()
-    
+
     // Should show validation errors
     await expect(intakePage.page.getByText(/required/i)).toBeVisible()
   })
@@ -52,11 +52,11 @@ test.describe('New Client Registration', () => {
       firstName: 'Test',
       lastName: 'Client',
       email: 'invalid-email',
-      phone: '+2348012345678'
+      phone: '+2348012345678',
     })
-    
+
     await intakePage.continueToCheckout()
-    
+
     // Should show email validation error
     const emailError = page.getByText(/valid email/i)
     await expect(emailError).toBeVisible()
@@ -67,11 +67,11 @@ test.describe('New Client Registration', () => {
       firstName: 'Test',
       lastName: 'Client',
       email: 'test@example.com',
-      phone: '123' // Invalid phone
+      phone: '123', // Invalid phone
     })
-    
+
     await intakePage.continueToCheckout()
-    
+
     // Should show phone validation error
     const phoneError = page.getByText(/phone/i)
     await expect(phoneError).toBeVisible()
