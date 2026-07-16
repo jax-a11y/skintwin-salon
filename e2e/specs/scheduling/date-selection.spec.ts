@@ -13,7 +13,7 @@ test.describe('Date Selection', () => {
     // Add a service first
     await homePage.goto()
     await homePage.addServiceToBooking('srv-001')
-    await bookingPage.goto()
+    await homePage.proceedToBooking()
   })
 
   test('should display calendar for date selection', async () => {
@@ -43,7 +43,10 @@ test.describe('Date Selection', () => {
   })
 
   test('should highlight selected date', async () => {
-    await bookingPage.selectDate(new Date())
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    if (tomorrow.getDay() === 0) tomorrow.setDate(tomorrow.getDate() + 1) // Skip Sunday
+    await bookingPage.selectDate(tomorrow)
 
     // Selected date should have active class
     await expect(bookingPage.page.locator('.date-picker__day--selected')).toBeVisible()

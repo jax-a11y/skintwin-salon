@@ -65,7 +65,7 @@ test.describe('Accessibility Audit', () => {
         // Link should have accessible name
         const hasAccessibleName = (text && text.trim().length > 0) || ariaLabel || ariaLabelledBy
 
-        expect(hasAccessibleName).toBe(true)
+        expect(hasAccessibleName).toBeTruthy()
 
         // Check for generic link text
         if (text) {

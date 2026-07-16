@@ -13,11 +13,12 @@ test.describe('Time Slot Selection', () => {
     // Add a service and go to booking
     await homePage.goto()
     await homePage.addServiceToBooking('srv-001')
-    await bookingPage.goto()
+    await homePage.proceedToBooking()
 
     // Select a date
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
+    if (tomorrow.getDay() === 0) tomorrow.setDate(tomorrow.getDate() + 1) // Skip Sunday
     await bookingPage.selectDate(tomorrow)
   })
 
