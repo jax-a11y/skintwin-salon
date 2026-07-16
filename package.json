@@ -11,7 +11,7 @@
     "skintwin"
   ],
   "engines": {
-    "node": ">=18.0.0 <20.0.0"
+    "node": ">=20.19.0"
   },
   "scripts": {
     "develop": "gatsby develop",
