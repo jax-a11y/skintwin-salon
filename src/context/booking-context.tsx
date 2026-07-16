@@ -316,7 +316,10 @@ export const useBooking = (): BookingContextValue => {
   return context
 }
 
-// Default export for Gatsby wrapRootElement
+/**
+ * Gatsby wrapRootElement wrapper that provides the BookingContext to the entire app.
+ * Used as the default export so Gatsby can call it in gatsby-browser.js / gatsby-ssr.js.
+ */
 function WrapWithBookingContext({ element }: { element: React.ReactNode }) {
   return <BookingContextProvider>{element}</BookingContextProvider>
 }
