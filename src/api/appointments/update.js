@@ -20,7 +20,15 @@ export default async function updateAppointment(req, res) {
     }
 
     // Validate status transitions
-    const validStatuses = ['draft', 'scheduled', 'payment_pending', 'paid', 'completed', 'cancelled', 'no_show']
+    const validStatuses = [
+      'draft',
+      'scheduled',
+      'payment_pending',
+      'paid',
+      'completed',
+      'cancelled',
+      'no_show',
+    ]
     if (data.status && !validStatuses.includes(data.status)) {
       return res.status(400).json({
         status: false,

@@ -8,20 +8,13 @@
   "designAlias": null,
   "gatewayPrefix": null,
   "provides": [],
-  "consumes": [
-    "integration-api"
-  ],
+  "consumes": ["integration-api"],
   "events": {
-    "publishes": [
-      "order.placed",
-      "appointment.created"
-    ],
+    "publishes": ["order.placed", "appointment.created"],
     "subscribes": []
   },
   "ci": {
-    "workflows": [
-      "ci.yml (lint, typecheck, unit, Gatsby build)"
-    ],
+    "workflows": ["ci.yml (lint, typecheck, unit, Gatsby build)"],
     "usesReusable": false
   },
   "registry": "https://github.com/jax-a11y/skintwin-ecosystem-design/blob/main/registry/ecosystem.json"

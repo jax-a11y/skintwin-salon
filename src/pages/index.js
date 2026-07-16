@@ -1,5 +1,5 @@
-import * as React from "react"
-import { Layout, ProductCard } from "../components"
+import * as React from 'react'
+import { Layout, ProductCard } from '../components'
 
 import '../styles/global.scss'
 

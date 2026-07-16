@@ -23,17 +23,21 @@ const BookingPage: React.FC = () => {
   // Get services in booking
   const bookedServices = useMemo(() => {
     if (!context?.services) return []
-    return context.services.map((selection) => {
-      const service = Services.find((s) => s.id === selection.serviceId)
-      return { ...selection, service }
-    }).filter((s) => s.service)
+    return context.services
+      .map((selection) => {
+        const service = Services.find((s) => s.id === selection.serviceId)
+        return { ...selection, service }
+      })
+      .filter((s) => s.service)
   }, [context?.services])
 
   // Calculate total duration
   const totalDuration = useMemo(() => {
     return bookedServices.reduce((total, item) => {
       if (!item.service) return total
-      return total + (item.service.durationMinutes + (item.service.bufferMinutes || 0)) * item.quantity
+      return (
+        total + (item.service.durationMinutes + (item.service.bufferMinutes || 0)) * item.quantity
+      )
     }, 0)
   }, [bookedServices])
 
@@ -54,8 +58,8 @@ const BookingPage: React.FC = () => {
       }
     })
 
-    return Providers.filter((provider) =>
-      requiredTypes.size === 0 || requiredTypes.has(provider.type)
+    return Providers.filter(
+      (provider) => requiredTypes.size === 0 || requiredTypes.has(provider.type)
     )
   }, [bookedServices])
 

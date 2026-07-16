@@ -124,10 +124,7 @@ describe('featureFlags – development environment overrides', () => {
   })
 
   it('should apply localStorage overrides on top of dev defaults', async () => {
-    localStorage.setItem(
-      'skintwin_feature_flags',
-      JSON.stringify({ newBookingFlow: false })
-    )
+    localStorage.setItem('skintwin_feature_flags', JSON.stringify({ newBookingFlow: false }))
     const { featureFlags: devFlags } = await import('./feature-flags')
     expect(devFlags.isEnabled('newBookingFlow')).toBe(false)
   })

@@ -1,6 +1,16 @@
 import React, { useState, createContext, useCallback, useMemo } from 'react'
 
 /**
+ * Minimal service item shape required for price/duration calculations
+ */
+interface ServiceItem {
+  id: string
+  price: number
+  durationMinutes: number
+  bufferMinutes?: number
+}
+
+/**
  * Service selection in the booking
  */
 export interface ServiceSelection {
@@ -82,8 +92,8 @@ export interface BookingContextValue extends BookingState {
 
   // Utility
   resetBooking: () => void
-  getTotalPrice: (servicesList: any[]) => number
-  getTotalDuration: (servicesList: any[]) => number
+  getTotalPrice: (servicesList: ServiceItem[]) => number
+  getTotalDuration: (servicesList: ServiceItem[]) => number
 
   // Legacy compatibility (for existing cart.js)
   productIds: string[]
@@ -95,13 +105,6 @@ const initialCheckout: CheckoutState = {
   invoiceId: '',
   offlineReference: '',
   status: 'idle',
-}
-
-const initialState: BookingState = {
-  services: [],
-  appointment: null,
-  client: null,
-  checkout: initialCheckout,
 }
 
 export const BookingContext = createContext<BookingContextValue | undefined>(undefined)
@@ -137,15 +140,16 @@ const BookingContextProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setServices((prev) => prev.filter((s) => s.serviceId !== serviceId))
   }, [])
 
-  const updateServiceQuantity = useCallback((serviceId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeService(serviceId)
-      return
-    }
-    setServices((prev) =>
-      prev.map((s) => (s.serviceId === serviceId ? { ...s, quantity } : s))
-    )
-  }, [removeService])
+  const updateServiceQuantity = useCallback(
+    (serviceId: string, quantity: number) => {
+      if (quantity <= 0) {
+        removeService(serviceId)
+        return
+      }
+      setServices((prev) => prev.map((s) => (s.serviceId === serviceId ? { ...s, quantity } : s)))
+    },
+    [removeService]
+  )
 
   const clearServices = useCallback(() => {
     setServices([])
@@ -204,7 +208,7 @@ const BookingContextProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Utility functions
   const getTotalPrice = useCallback(
-    (servicesList: any[]) => {
+    (servicesList: ServiceItem[]) => {
       return services.reduce((total, selection) => {
         const service = servicesList.find((s) => s.id === selection.serviceId)
         if (!service) return total
@@ -226,7 +230,7 @@ const BookingContextProvider: React.FC<{ children: React.ReactNode }> = ({ child
   )
 
   const getTotalDuration = useCallback(
-    (servicesList: any[]) => {
+    (servicesList: ServiceItem[]) => {
       return services.reduce((total, selection) => {
         const service = servicesList.find((s) => s.id === selection.serviceId)
         if (!service) return total
@@ -248,9 +252,12 @@ const BookingContextProvider: React.FC<{ children: React.ReactNode }> = ({ child
   )
 
   // Legacy compatibility for existing cart.js page
-  const updateCart = useCallback((id: number) => {
-    addService(id.toString())
-  }, [addService])
+  const updateCart = useCallback(
+    (id: number) => {
+      addService(id.toString())
+    },
+    [addService]
+  )
 
   const resetCart = useCallback(() => {
     clearServices()
@@ -310,6 +317,7 @@ export const useBooking = (): BookingContextValue => {
 }
 
 // Default export for Gatsby wrapRootElement
-export default ({ element }: { element: React.ReactNode }) => (
-  <BookingContextProvider>{element}</BookingContextProvider>
-)
+function WrapWithBookingContext({ element }: { element: React.ReactNode }) {
+  return <BookingContextProvider>{element}</BookingContextProvider>
+}
+export default WrapWithBookingContext

@@ -246,9 +246,7 @@ test.describe('Touch Targets @accessibility', () => {
         // Minimum recommended touch target is 44x44px
         // But we'll warn rather than fail if slightly smaller
         if (box.width < 32 || box.height < 32) {
-          console.warn(
-            `Small touch target: ${box.width}x${box.height}px (recommended: 44x44px)`
-          )
+          console.warn(`Small touch target: ${box.width}x${box.height}px (recommended: 44x44px)`)
         }
 
         // Should be at least reasonably sized

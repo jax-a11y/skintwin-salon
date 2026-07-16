@@ -192,7 +192,11 @@ const IntakePage: React.FC = () => {
                 data-testid="first-name"
               />
               {errors.firstName && (
-                <span className="intake__error" data-error-for="firstName" data-testid="error-firstName">
+                <span
+                  className="intake__error"
+                  data-error-for="firstName"
+                  data-testid="error-firstName"
+                >
                   {errors.firstName}
                 </span>
               )}
@@ -209,7 +213,11 @@ const IntakePage: React.FC = () => {
                 data-testid="last-name"
               />
               {errors.lastName && (
-                <span className="intake__error" data-error-for="lastName" data-testid="error-lastName">
+                <span
+                  className="intake__error"
+                  data-error-for="lastName"
+                  data-testid="error-lastName"
+                >
                   {errors.lastName}
                 </span>
               )}
@@ -283,11 +291,7 @@ const IntakePage: React.FC = () => {
             >
               Back to Scheduling
             </button>
-            <button
-              type="submit"
-              className="intake__continue"
-              data-testid="continue-to-checkout"
-            >
+            <button type="submit" className="intake__continue" data-testid="continue-to-checkout">
               Continue to Checkout
             </button>
           </div>

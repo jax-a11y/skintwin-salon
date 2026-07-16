@@ -2,7 +2,11 @@ import { test, expect } from '@playwright/test'
 import { HomePage } from '../../pages/home.page'
 import { CheckoutPage } from '../../pages/checkout.page'
 import { mockPaystackApi, mockPaystackApiError } from '../../mocks/paystack'
-import { injectPusherMock, simulatePaymentSuccess, simulatePaymentPending } from '../../mocks/pusher'
+import {
+  injectPusherMock,
+  simulatePaymentSuccess,
+  simulatePaymentPending,
+} from '../../mocks/pusher'
 
 test.describe('Checkout Flow @smoke', () => {
   let homePage: HomePage

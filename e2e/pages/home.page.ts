@@ -67,7 +67,9 @@ export class HomePage {
   }
 
   async getServiceDuration(serviceId: string): Promise<string> {
-    const durationElement = this.page.locator(`[data-testid="service-${serviceId}"] .service-duration`)
+    const durationElement = this.page.locator(
+      `[data-testid="service-${serviceId}"] .service-duration`
+    )
     return (await durationElement.textContent()) || ''
   }
 

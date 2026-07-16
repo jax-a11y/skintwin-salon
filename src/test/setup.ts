@@ -21,23 +21,25 @@ vi.mock('gatsby', async () => {
   return {
     ...(gatsby as object),
     graphql: vi.fn(),
-    Link: vi.fn().mockImplementation(
-      ({
-        activeClassName: _activeClassName,
-        activeStyle: _activeStyle,
-        getProps: _getProps,
-        innerRef: _innerRef,
-        partiallyActive: _partiallyActive,
-        ref: _ref,
-        replace: _replace,
-        to,
-        ...rest
-      }: GatsbyLinkProps) =>
-        createElement('a', {
-          ...(rest as Record<string, unknown>),
-          href: to,
-        })
-    ),
+    Link: vi
+      .fn()
+      .mockImplementation(
+        ({
+          activeClassName: _activeClassName,
+          activeStyle: _activeStyle,
+          getProps: _getProps,
+          innerRef: _innerRef,
+          partiallyActive: _partiallyActive,
+          ref: _ref,
+          replace: _replace,
+          to,
+          ...rest
+        }: GatsbyLinkProps) =>
+          createElement('a', {
+            ...(rest as Record<string, unknown>),
+            href: to,
+          })
+      ),
     StaticQuery: vi.fn(),
     useStaticQuery: vi.fn(),
     navigate: vi.fn(),
