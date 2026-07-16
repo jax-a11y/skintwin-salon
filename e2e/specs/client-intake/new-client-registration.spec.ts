@@ -51,7 +51,7 @@ test.describe('New Client Registration', () => {
     await intakePage.fillClientForm({
       firstName: 'Test',
       lastName: 'Client',
-      email: 'invalid@email',
+      email: 'invalid-email',
       phone: '+2348012345678',
     })
 

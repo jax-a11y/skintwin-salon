@@ -51,9 +51,6 @@ test.describe('Payment Failure', () => {
   })
 
   test('should preserve booking data after failure', async ({ page }) => {
-    // Note key content before payment
-    const summaryBefore = await page.getByTestId('booking-summary').textContent()
-
     await checkoutPage.createInvoice()
     await checkoutPage.pushToTerminal()
     await simulatePaymentFailure(page)
@@ -62,10 +59,6 @@ test.describe('Payment Failure', () => {
     const summaryAfter = await page.getByTestId('booking-summary').textContent()
     expect(summaryAfter).toContain('Your Cart')
     expect(summaryAfter).toContain('Total:')
-    // Ensure some original content is preserved
-    if (summaryBefore) {
-      expect(summaryAfter?.length).toBeGreaterThan(0)
-    }
   })
 
   test('should allow editing booking after failure', async ({ page }) => {

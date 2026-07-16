@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { BookingPage } from '../../pages/booking.page'
 import { HomePage } from '../../pages/home.page'
+import { getTomorrowDate } from '../../helpers/booking-flow'
 
 test.describe('Date Selection', () => {
   let bookingPage: BookingPage
@@ -43,10 +44,7 @@ test.describe('Date Selection', () => {
   })
 
   test('should highlight selected date', async () => {
-    const tomorrow = new Date()
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    if (tomorrow.getDay() === 0) tomorrow.setDate(tomorrow.getDate() + 1) // Skip Sunday
-    await bookingPage.selectDate(tomorrow)
+    await bookingPage.selectDate(getTomorrowDate())
 
     // Selected date should have active class
     await expect(bookingPage.page.locator('.date-picker__day--selected')).toBeVisible()
